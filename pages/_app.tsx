@@ -6,13 +6,24 @@ import Theme from '@styles/theme';
 
 import { RecoilRoot } from 'recoil';
 
+import { QueryClient, QueryClientProvider } from 'react-query';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <GlobalStyle />
-      <ThemeProvider theme={Theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <GlobalStyle />
+        <ThemeProvider theme={Theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </QueryClientProvider>
     </RecoilRoot>
   );
 }
