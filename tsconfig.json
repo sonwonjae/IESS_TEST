@@ -14,13 +14,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "./src",
     "downlevelIteration": true,
+    "baseUrl": ".",
     "paths": {
       "@*": ["./*"],
       "@pages/*": ["pages/*"],
       "@api/*": ["api/*"],
       "@components/*": ["components/*"],
+      "@styles/*": ["styles/*"],
       "@hooks/*": ["hooks/*"]
     }
   },
