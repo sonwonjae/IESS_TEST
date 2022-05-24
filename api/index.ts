@@ -19,7 +19,7 @@ const createAxiosWithUser = (): AxiosInstance => {
 };
 
 // Guest
-export const axiosService = createAxiosWithGuest();
+export const axiosWithGuest = createAxiosWithGuest();
 
 // User
-export const axiosWithToken = createAxiosWithUser();
+export const axiosWithUser = createAxiosWithUser();
