@@ -8,6 +8,7 @@ const Home: NextPage = () => {
       console.log({ res });
     },
   });
+
   return (
     <>
       <Head>
