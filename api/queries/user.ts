@@ -22,7 +22,9 @@ const provider = new GoogleAuthProvider();
 // 로그인 정보 확인
 const confirmLogin = async () => {
   try {
-    return !!(await getRedirectResult(auth));
+    const User = await getRedirectResult(auth);
+    console.log({ User });
+    return !!User;
   } catch (error) {
     console.log({ error });
   }
