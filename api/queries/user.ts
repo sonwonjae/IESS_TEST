@@ -23,11 +23,8 @@ const provider = new GoogleAuthProvider();
 const confirmLogin = async () => {
   try {
     const User = await getRedirectResult(auth);
-    console.log({ User });
     return !!User;
-  } catch (error) {
-    console.log({ error });
-  }
+  } catch (error) {}
 };
 export const useConfirmLogin = () => {
   return useQuery('confirmLogin', confirmLogin);
@@ -37,7 +34,6 @@ export const useConfirmLogin = () => {
 const login = async () => {
   try {
     await signInWithRedirect(auth, provider);
-    window.location.replace('/');
     return { message: '로그인 성공' };
   } catch (error) {
     return { message: '로그인 실패' };
