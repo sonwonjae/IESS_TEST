@@ -11,10 +11,10 @@ export const useCreateQuestion = (
     MutationFunction
   >
 ) => {
-  return useMutation((reqData) => axiosWithUser.post('/question', reqData), {
-    ...options,
-    retry: false,
-  });
+  return useMutation(
+    (reqData) => axiosWithUser.post('/question', reqData),
+    options
+  );
 };
 
 // 질문 업데이트

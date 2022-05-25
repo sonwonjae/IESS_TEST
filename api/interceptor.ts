@@ -1,8 +1,17 @@
-import axios, { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios';
+
+import { auth } from '@firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export function interceptors(requestHTTP: AxiosInstance) {
   requestHTTP.interceptors.request.use(
-    (config) => {
+    async (config) => {
+      await onAuthStateChanged(auth, (user) => {
+        if (user) {
+          config.headers = config.headers || {};
+          config.headers.uid = user.uid;
+        }
+      });
       return config;
     },
     (error) => {
@@ -15,6 +24,10 @@ export function interceptors(requestHTTP: AxiosInstance) {
       return response;
     },
     (error) => {
+      if (error.response.status === 403) {
+        window.location.href = '/login';
+      }
+
       return Promise.reject(error);
     }
   );
