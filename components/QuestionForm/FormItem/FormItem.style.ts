@@ -54,6 +54,7 @@ export const ToggleInputContainer = styled.div`
       height: ${({ theme }) => theme.layout.checkbox.blank};
       border-radius: 50%;
       border: 0.1rem solid ${({ theme }) => theme.color.primary[500]};
+      cursor: pointer;
     }
   }
 
@@ -67,6 +68,7 @@ export const ToggleInputContainer = styled.div`
       border-radius: 50%;
       border: 0.1rem solid ${({ theme }) => theme.color.primary[500]};
       background-color: ${({ theme }) => theme.color.primary[500]};
+      cursor: pointer;
     }
   }
 `;

@@ -31,6 +31,7 @@ const layout = {
   padding: {
     xSmall: '0.4rem',
     small: '0.8rem',
+    mediumSmall: '1.4rem',
     medium: '2rem',
     mediumLarge: '2.4rem',
   },

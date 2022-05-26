@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Button = styled.button`
   display: block;
   width: 100%;
-  padding: ${({ theme }) => theme.layout.padding.small};
+  padding: ${({ theme }) => theme.layout.padding.mediumSmall};
   background-color: ${({ theme }) => theme.color.white};
   color: ${({ theme }) => theme.color.primary[500]};
   border: 0.1rem solid ${({ theme }) => theme.color.primary[500]};
