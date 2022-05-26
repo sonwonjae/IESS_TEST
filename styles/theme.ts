@@ -33,7 +33,7 @@ const layout = {
     small: '0.8rem',
     mediumSmall: '1.4rem',
     medium: '2rem',
-    mediumLarge: '2.4rem',
+    mediumLarge: '2.8rem',
   },
   borderRadius: {
     small: '0.4rem',

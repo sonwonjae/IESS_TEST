@@ -45,6 +45,7 @@ export const ToggleInputContainer = styled.div`
     display: flex;
     align-items: center;
     margin: 0;
+    font-size: ${({ theme }) => theme.layout.fontSize.medium};
 
     &::before {
       content: '';
