@@ -23,6 +23,7 @@
       "@firebase/*": ["firebase/*"],
       "@components/*": ["components/*"],
       "@styles/*": ["styles/*"],
+      "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"]
     }
   },

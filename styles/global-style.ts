@@ -41,6 +41,7 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     border: 0;
     vertical-align: baseline;
+    font-family: 'NanumSquareR'
   }
 
   /* HTML5 display-role reset for older browsers */
@@ -59,9 +60,10 @@ export const GlobalStyle = createGlobalStyle`
     border-radius: 0;
     vertical-align: middle;
     background: transparent;
+    font-family: 'NanumSquareR'
   }
 
-  input, button {
+  input, button,textarea {
     background-color: transparent;
     border: none;
     outline: none;

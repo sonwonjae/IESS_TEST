@@ -1,17 +1,17 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-const Home: NextPage = () => {
+const Notes: NextPage = () => {
   return (
     <>
       <Head>
-        <title>IESS</title>
+        <title>IESS | note list</title>
       </Head>
       <>
-        <h2>HOME</h2>
+        <h2>NOTES</h2>
       </>
     </>
   );
 };
 
-export default Home;
+export default Notes;

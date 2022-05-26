@@ -6,6 +6,8 @@ import Theme from '@styles/theme';
 
 import { RecoilRoot } from 'recoil';
 
+import './_app.css';
+
 import { QueryClient, QueryClientProvider } from 'react-query';
 const queryClient = new QueryClient({
   defaultOptions: {
