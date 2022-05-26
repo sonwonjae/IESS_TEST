@@ -17,11 +17,12 @@ export const BasicModalDim = styled(Dim)`
 `;
 
 export const BasicModalContainer = styled.div`
+  overflow: auto;
   width: 100%;
   max-width: 54rem;
   min-height: 30rem;
   max-height: 54rem;
-  padding: ${({ theme }) => theme.layout.padding.medium};
+  padding: ${({ theme }) => theme.layout.padding.mediumLarge};
   border-radius: ${({ theme }) => theme.layout.borderRadius.medium};
   background-color: ${({ theme }) => theme.color.white};
 `;
