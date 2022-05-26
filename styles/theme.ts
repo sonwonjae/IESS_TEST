@@ -17,6 +17,16 @@ const color = {
   disabled: '#f2f3f4',
 };
 
-const Theme = { color };
+const layout = {
+  padding: {
+    medium: '2rem',
+  },
+  borderRadius: {
+    medium: '0.8rem',
+    large: '50rem',
+  },
+};
+
+const Theme = { color, layout };
 
 export default Theme;
