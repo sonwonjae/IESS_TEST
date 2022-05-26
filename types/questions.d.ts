@@ -5,8 +5,8 @@ interface Question {
   isPublic: boolean;
   withInterview: boolean;
   group: string;
-  searchKeyword: string[];
-  likedUsers: string[];
+  searchKeyword?: string[];
+  likedUsers?: string[];
 }
 
 type Questions = {
