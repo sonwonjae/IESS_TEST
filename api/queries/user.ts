@@ -23,6 +23,10 @@ const provider = new GoogleAuthProvider();
 const confirmLogin = async () => {
   try {
     const User = await getRedirectResult(auth);
+
+    if (!!User) {
+      document.cookie = `uid=${User.user.uid}`;
+    }
     return !!User;
   } catch (error) {}
 };

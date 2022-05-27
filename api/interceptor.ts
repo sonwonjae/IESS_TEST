@@ -6,12 +6,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 export function interceptors(requestHTTP: AxiosInstance) {
   requestHTTP.interceptors.request.use(
     async (config) => {
-      await onAuthStateChanged(auth, (user) => {
-        if (user) {
-          config.headers = config.headers || {};
-          config.headers.uid = user.uid;
-        }
-      });
       return config;
     },
     (error) => {
