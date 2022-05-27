@@ -8,8 +8,10 @@ import { showBasicModalState } from '@store/modal';
 import Layout from '@layout';
 import { BasicModal } from '@layout/Modal';
 
-import { QuestionForm } from '@components';
+import { QuestionForm } from '@components/Form';
 import { useState } from 'react';
+import { useInterview } from '@api/queries/interview';
+import { useQuestions } from '@api/queries/questions';
 
 const Note: NextPage = () => {
   const router = useRouter();
@@ -17,6 +19,11 @@ const Note: NextPage = () => {
   const [initQuestionFormData, setInitQuestionFormData] = useState<
     Question | undefined
   >();
+  const { data: interview, isLoading, isError } = useInterview();
+  const { data: questions } = useQuestions({
+    enabled: !!router.query.interviewId && !!interview,
+  });
+  console.log({ questions });
 
   const openModal = () => {
     setShowBasicModal(true);
@@ -25,7 +32,7 @@ const Note: NextPage = () => {
   return (
     <>
       <Head>
-        <title>IESS | {router.query.interviewId}</title>
+        <title>IESS | {interview?.title}</title>
       </Head>
       <Layout>
         <h2>INTERVIEW NOTE</h2>
