@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 import Layout from '@layout';
 
@@ -10,19 +9,11 @@ import { useInterview } from '@api/queries/interview';
 import { useQuestions } from '@api/queries/questions';
 
 const Note: NextPage = () => {
-  const router = useRouter();
   const { data: interview, isLoading, isError } = useInterview();
-  const { data } = useQuestions({
-    enabled: !!router.query.interviewId && !!interview,
-  });
+  const { data } = useQuestions();
 
-  if (!data) {
-    return <></>;
-  }
+  const questions = data ? data.questions : [];
 
-  const { questions } = data;
-
-  console.log({ questions });
   return (
     <>
       <Head>
@@ -31,11 +22,12 @@ const Note: NextPage = () => {
       <Layout>
         <h2>INTERVIEW NOTE</h2>
         <div>
-          {questions?.map((questionGroup) => {
+          {questions.map((questionGroup) => {
             const [groupName] = questionGroup;
             return (
               <QuestionGroupCard
                 key={groupName}
+                reqQuestionFormData={data}
                 questionGroup={questionGroup}
               />
             );

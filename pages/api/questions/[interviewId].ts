@@ -73,7 +73,6 @@ export default async function handler(
         const groupOrderIdx = groupOrderMap[groupName];
         questions[groupOrderIdx] = [groupName, questionsInMap];
       }
-      console.log({ questions });
 
       res.status(200).json({
         groupOrder,

@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 
-import { useQuestions } from '@api/queries/questions';
 import { useCreateQuestion } from '@api/queries/question';
 
 import * as FormStyled from '../Form.style';
@@ -19,12 +18,14 @@ import { useRouter } from 'next/router';
 import { useQueryClient } from 'react-query';
 
 interface QuestionFormProps {
+  reqQuestionFormData: ResQuestions | undefined;
   initFormData?: Question;
   initGroup?: string;
   setShowBasicModal: (value: SetStateAction<boolean>) => void;
 }
 
 function QuestionForm({
+  reqQuestionFormData,
   initFormData: init = {
     title: '',
     answer: '',
@@ -52,13 +53,12 @@ function QuestionForm({
     title && (init.title !== title || init.answer !== answer || changedHints);
   const queryClient = useQueryClient();
 
-  const { data } = useQuestions();
   const createQuestionMutate = useCreateQuestion({
     onSuccess: (res) => {
       const queryKey = ['questions', router.query.interviewId];
 
-      if (!data) return;
-      const { questions, groupOrder, orders } = data;
+      if (!reqQuestionFormData) return;
+      const { questions, groupOrder, orders } = reqQuestionFormData;
       const newQuestions = questions.map(([groupName, qInNewQuestions]) => {
         if (groupName === group) {
           qInNewQuestions.push({
@@ -106,7 +106,7 @@ function QuestionForm({
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
-    if (!data) return;
+    if (!reqQuestionFormData) return;
     createQuestionMutate.mutate({
       question: {
         title,
@@ -119,8 +119,8 @@ function QuestionForm({
         likedUsers: [],
         interviewId: router.query.interviewId as string,
       },
-      groupOrder: data.groupOrder,
-      orders: data.orders,
+      groupOrder: reqQuestionFormData.groupOrder,
+      orders: reqQuestionFormData.orders,
     });
     setShowBasicModal(false);
   };

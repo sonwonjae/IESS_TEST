@@ -6,10 +6,12 @@ import { UserQuestionCard } from '@components/Card';
 import { QuestionForm } from '@components/Form';
 
 interface QuestionGroupCardProps {
+  reqQuestionFormData: ResQuestions | undefined;
   questionGroup?: [string, Questions];
 }
 
 function QuestionGroupCard({
+  reqQuestionFormData,
   questionGroup,
 }: PropsWithChildren<QuestionGroupCardProps>) {
   const [showBasicModal, setShowBasicModal] = useState(false);
@@ -17,18 +19,21 @@ function QuestionGroupCard({
     Question | undefined
   >();
 
+  const openModal = () => {
+    setShowBasicModal(true);
+  };
+
   if (!questionGroup)
     return (
       <>
         <h3>none</h3>
         <ul></ul>
+        <button onClick={openModal}>질문 추가하기</button>
       </>
     );
 
   const [groupName, questions] = questionGroup;
-  const openModal = () => {
-    setShowBasicModal(true);
-  };
+
   return (
     <>
       <h3>{groupName}</h3>
@@ -47,6 +52,7 @@ function QuestionGroupCard({
         setShowBasicModal={setShowBasicModal}
       >
         <QuestionForm
+          reqQuestionFormData={reqQuestionFormData}
           initFormData={initQuestionFormData}
           initGroup={groupName}
           setShowBasicModal={setShowBasicModal}

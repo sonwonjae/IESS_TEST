@@ -24,7 +24,6 @@ export const useQuestions = (
     ['questions', router.query.interviewId],
     () => fetchQuestions(router.query.interviewId),
     {
-      retry: false,
       enabled: !!router.query.interviewId,
       ...option,
     }
