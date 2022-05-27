@@ -11,11 +11,18 @@ export default async function handler(
 ) {
   const { method, body, cookies } = req;
 
+  const questionsOrderCollectionId = 'questions_order';
   const collectionId = 'interviews';
   const newInterviewId = makeId(collectionId, cookies.uid);
 
   switch (method) {
     case 'POST':
+      await setDoc(doc(db, questionsOrderCollectionId, newInterviewId), {
+        groupOrder: ['none'],
+        orders: {
+          none: [],
+        },
+      });
       await setDoc(doc(db, collectionId, newInterviewId), {
         ...body,
         uid: cookies.uid,
