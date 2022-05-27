@@ -3,29 +3,32 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
-import { v5 } from 'uuid';
+import { makeId } from '@utils/api';
 interface ResQuestion {
   message: string;
 }
-
-const createQuestionId = (...strings: string[]) => {
-  const newStrings = [...strings, new Date().toISOString()];
-  const uuidName = newStrings.reduce((acc, string) => acc + string, '');
-  return v5(uuidName, v5.URL);
-};
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResQuestion>
 ) {
-  const { method, headers, body } = req;
+  const {
+    method,
+    cookies,
+    body,
+    query: { interviewId },
+  } = req;
 
   const collectionId = 'questions';
-  const newQuesetionId = createQuestionId(collectionId, headers.uid as string);
+  const newQuestionId = makeId(collectionId, cookies.uid as string);
 
   switch (method) {
     case 'POST':
-      await setDoc(doc(db, collectionId, newQuesetionId), body);
+      await setDoc(doc(db, collectionId, newQuestionId), {
+        ...body,
+        uid: cookies.uid,
+        interviewId: interviewId,
+      });
       res.status(200).json({ message: 'question 추가 성공' });
       break;
     case 'PUT':
