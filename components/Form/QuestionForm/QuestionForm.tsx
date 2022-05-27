@@ -12,6 +12,7 @@ import * as FormStyled from '../Form.style';
 import { TextInput, ToggleInput, HintInput } from '@components/Form/FormItem';
 
 import { makeSearchKeyword } from '@utils/question';
+import { useRouter } from 'next/router';
 
 interface QuestionFormProps {
   initFormData?: Question;
@@ -19,7 +20,7 @@ interface QuestionFormProps {
 
 function QuestionForm({
   initFormData: init = {
-    question: '',
+    title: '',
     answer: '',
     hints: [],
     isPublic: true,
@@ -27,8 +28,9 @@ function QuestionForm({
     group: '',
   },
 }: PropsWithChildren<QuestionFormProps>) {
+  const router = useRouter();
   // 데이터 관련 상태
-  const [question, setQuestion] = useState(init.question);
+  const [title, setTitle] = useState(init.title);
   const [answer, setAnswer] = useState(init.answer);
   const [hint, setHint] = useState('');
   const [hints, setHints] = useState(init.hints);
@@ -40,8 +42,7 @@ function QuestionForm({
 
   // 유효성 관련 상태
   const isValid =
-    question &&
-    (init.question !== question || init.answer !== answer || changedHints);
+    title && (init.title !== title || init.answer !== answer || changedHints);
 
   const createQuestionMutate = useCreateQuestion({
     onSuccess: (res) => {
@@ -63,14 +64,15 @@ function QuestionForm({
     e.preventDefault();
 
     createQuestionMutate.mutate({
-      question,
+      title,
       answer,
       hints,
       isPublic,
       withInterview,
       group: group || 'none',
-      searchKeyword: makeSearchKeyword(question),
+      searchKeyword: makeSearchKeyword(title),
       likedUsers: [],
+      interviewId: router.query.interviewId as string,
     });
     setShowBasicModal(false);
   };
@@ -85,9 +87,9 @@ function QuestionForm({
       </Head>
       <FormStyled.Form onSubmit={onSubmit}>
         <TextInput
-          id="question"
-          value={question}
-          setValue={setQuestion}
+          id="title"
+          value={title}
+          setValue={setTitle}
           required
           placeholder={'질문을 입력해주세요.'}
         >
