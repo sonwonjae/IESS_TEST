@@ -5,16 +5,16 @@ import { AxiosError, AxiosResponse } from 'axios';
 
 // 면접 리스트 GET
 const fetchQuestions = async (interviewId: string | string[] | undefined) => {
-  const { data } = await axiosWithUser.get<Questions>(
+  const { data } = await axiosWithUser.get<ResQuestions>(
     `/questions/${interviewId}`
   );
   return data;
 };
 export const useQuestions = (
   option?: UseQueryOptions<
-    Questions,
+    ResQuestions,
     AxiosError<any>,
-    Questions,
+    ResQuestions,
     ['questions', string | string[] | undefined]
   >
 ) => {
@@ -25,6 +25,7 @@ export const useQuestions = (
     () => fetchQuestions(router.query.interviewId),
     {
       retry: false,
+      enabled: !!router.query.interviewId,
       ...option,
     }
   );

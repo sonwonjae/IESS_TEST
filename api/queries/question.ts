@@ -6,9 +6,9 @@ import { axiosWithUser } from '@api';
 // 질문 추가
 export const useCreateQuestion = (
   options?: UseMutationOptions<
-    AxiosResponse,
+    AxiosResponse<{ message: string; questionId: string }>,
     AxiosError<any>,
-    Question,
+    ReqQuestion,
     MutationFunction
   >
 ) => {
