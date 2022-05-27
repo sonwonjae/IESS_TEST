@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { MutationFunction, useMutation, UseMutationOptions } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { axiosWithUser } from '@api';
@@ -11,8 +12,11 @@ export const useCreateQuestion = (
     MutationFunction
   >
 ) => {
+  const router = useRouter();
+
   return useMutation(
-    (reqData) => axiosWithUser.post('/question', reqData),
+    (reqData) =>
+      axiosWithUser.post(`/question/${router.query.interviewId}`, reqData),
     options
   );
 };
