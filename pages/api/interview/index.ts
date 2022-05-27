@@ -12,11 +12,14 @@ export default async function handler(
   const { method, body, cookies } = req;
 
   const collectionId = 'interviews';
-  const newInterviewId = makeId(collectionId, cookies.uid as string);
+  const newInterviewId = makeId(collectionId, cookies.uid);
 
   switch (method) {
     case 'POST':
-      await setDoc(doc(db, collectionId, newInterviewId), body);
+      await setDoc(doc(db, collectionId, newInterviewId), {
+        ...body,
+        uid: cookies.uid,
+      });
       res.status(200);
       break;
     case 'PUT':

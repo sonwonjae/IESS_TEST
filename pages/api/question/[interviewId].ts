@@ -23,7 +23,7 @@ export default async function handler(
 
   const questionsCollectionId = 'questions';
   const questionsOrderCollectionId = 'questions_order';
-  const newQuestionId = makeId(questionsCollectionId, cookies.uid as string);
+  const newQuestionId = makeId(questionsCollectionId, cookies.uid);
 
   switch (method) {
     case 'POST':

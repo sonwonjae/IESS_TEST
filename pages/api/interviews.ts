@@ -22,6 +22,7 @@ export default async function handler(
           ...(doc.data() as Interview),
           interviewId: doc.id,
         };
+        console.log({ data });
         resBody.push(data);
       });
       res.status(200).json(resBody);
