@@ -52,6 +52,12 @@ const layout = {
     checked: '0.8rem',
     blank: '1.6rem',
   },
+  height: {
+    header: '7.2rem',
+  },
+  width: {
+    maxWidth: '80rem',
+  },
 };
 
 const Theme = { color, layout };

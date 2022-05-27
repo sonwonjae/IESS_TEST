@@ -1,11 +1,14 @@
 import { PropsWithChildren } from 'react';
 
+import * as LayoutStyled from './layout.style';
+
 interface LayoutProps {}
 
 function Layout({ children }: PropsWithChildren<LayoutProps>) {
   return (
     <>
-      <main>{children}</main>
+      <LayoutStyled.Header></LayoutStyled.Header>
+      <LayoutStyled.Main>{children}</LayoutStyled.Main>
     </>
   );
 }
