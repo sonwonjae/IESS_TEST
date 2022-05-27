@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import * as CommonStyled from '@components/Common.style';
+import * as CommonStyled from '@components/Common/Common.style';
 
 export const Form = styled.form`
   & > div:not(:first-child) {

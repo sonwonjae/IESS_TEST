@@ -7,9 +7,9 @@ import { useCreateQuestion } from '@api/queries/question';
 import { useSetRecoilState } from 'recoil';
 import { showBasicModalState } from '@store/modal';
 
-import * as QuestionFormStyled from './QuestionForm.style';
+import * as FormStyled from '../Form.style';
 
-import { TextInput, ToggleInput, HintInput } from './FormItem';
+import { TextInput, ToggleInput, HintInput } from '@components/Form/FormItem';
 
 import { makeSearchKeyword } from '@utils/question';
 
@@ -83,7 +83,7 @@ function QuestionForm({
           content="width=device-width, initial-scale=1, maximum-scale=1"
         ></meta>
       </Head>
-      <QuestionFormStyled.Form onSubmit={onSubmit}>
+      <FormStyled.Form onSubmit={onSubmit}>
         <TextInput
           id="question"
           value={question}
@@ -126,10 +126,10 @@ function QuestionForm({
           답변
         </TextInput>
 
-        <QuestionFormStyled.SubmitButton type="submit" disabled={!isValid}>
+        <FormStyled.SubmitButton type="submit" disabled={!isValid}>
           {!!init ? '질문 추가' : '질문 업데이트'}
-        </QuestionFormStyled.SubmitButton>
-      </QuestionFormStyled.Form>
+        </FormStyled.SubmitButton>
+      </FormStyled.Form>
     </>
   );
 }
