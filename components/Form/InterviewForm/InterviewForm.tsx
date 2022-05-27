@@ -15,7 +15,7 @@ interface InterviewFormProps {}
 
 function InterviewForm({}: PropsWithChildren<InterviewFormProps>) {
   // 데이터 관련 상태
-  const [title, setTitle] = useState('인터뷰 테스트');
+  const [title, setTitle] = useState('');
   const createInterviewMutate = useCreateInterview({
     onSuccess: (res) => {
       console.log({ res });
