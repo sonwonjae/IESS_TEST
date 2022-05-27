@@ -1,11 +1,14 @@
 import Head from 'next/head';
 
-import { FormEventHandler, PropsWithChildren, useState } from 'react';
+import {
+  FormEventHandler,
+  PropsWithChildren,
+  SetStateAction,
+  useState,
+} from 'react';
 
+import { useQuestions } from '@api/queries/questions';
 import { useCreateQuestion } from '@api/queries/question';
-
-import { useSetRecoilState } from 'recoil';
-import { showBasicModalState } from '@store/modal';
 
 import * as FormStyled from '../Form.style';
 
@@ -13,9 +16,12 @@ import { TextInput, ToggleInput, HintInput } from '@components/Form/FormItem';
 
 import { makeSearchKeyword } from '@utils/question';
 import { useRouter } from 'next/router';
+import { useQueryClient } from 'react-query';
 
 interface QuestionFormProps {
   initFormData?: Question;
+  initGroup?: string;
+  setShowBasicModal: (value: SetStateAction<boolean>) => void;
 }
 
 function QuestionForm({
@@ -27,6 +33,8 @@ function QuestionForm({
     withInterview: false,
     group: '',
   },
+  initGroup = 'none',
+  setShowBasicModal,
 }: PropsWithChildren<QuestionFormProps>) {
   const router = useRouter();
   // 데이터 관련 상태
@@ -37,16 +45,51 @@ function QuestionForm({
   const [changedHints, setChangedHints] = useState(true);
   const [isPublic, setIsPublic] = useState(init.isPublic);
   const [withInterview, setWithInterview] = useState(init.withInterview);
-  const [group, setGroup] = useState(init.group);
-  const setShowBasicModal = useSetRecoilState(showBasicModalState);
+  const [group, setGroup] = useState(initGroup);
 
   // 유효성 관련 상태
   const isValid =
     title && (init.title !== title || init.answer !== answer || changedHints);
+  const queryClient = useQueryClient();
 
+  const { data } = useQuestions();
   const createQuestionMutate = useCreateQuestion({
     onSuccess: (res) => {
-      console.log({ res });
+      const queryKey = ['questions', router.query.interviewId];
+
+      if (!data) return;
+      const { questions, groupOrder, orders } = data;
+      const newQuestions = questions.map(([groupName, qInNewQuestions]) => {
+        if (groupName === group) {
+          qInNewQuestions.push({
+            title,
+            answer,
+            hints,
+            isPublic,
+            withInterview,
+            group,
+            searchKeyword: makeSearchKeyword(title),
+            likedUsers: [],
+            interviewId: router.query.interviewId as string,
+            questionId: res.data.questionId,
+          });
+        }
+        return [groupName, qInNewQuestions];
+      });
+      const newGroupOrder = new Set(groupOrder);
+      newGroupOrder.add(group);
+
+      if (orders[group]) {
+        orders[group].push(res.data.questionId);
+      } else {
+        orders[group] = [res.data.questionId];
+      }
+
+      queryClient.setQueryData(queryKey, {
+        questions: newQuestions,
+        groupOrder: [...newGroupOrder],
+        orders,
+      });
     },
   });
 
@@ -63,16 +106,21 @@ function QuestionForm({
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
+    if (!data) return;
     createQuestionMutate.mutate({
-      title,
-      answer,
-      hints,
-      isPublic,
-      withInterview,
-      group: group || 'none',
-      searchKeyword: makeSearchKeyword(title),
-      likedUsers: [],
-      interviewId: router.query.interviewId as string,
+      question: {
+        title,
+        answer,
+        hints,
+        isPublic,
+        withInterview,
+        group: group,
+        searchKeyword: makeSearchKeyword(title),
+        likedUsers: [],
+        interviewId: router.query.interviewId as string,
+      },
+      groupOrder: data.groupOrder,
+      orders: data.orders,
     });
     setShowBasicModal(false);
   };

@@ -1,15 +1,18 @@
-import { MouseEventHandler, PropsWithChildren } from 'react';
+import { MouseEventHandler, PropsWithChildren, SetStateAction } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useRecoilState } from 'recoil';
-import { showBasicModalState } from '@store/modal';
 import * as ModalStyled from './Modal.style';
 
-interface BasicModalProps {}
+interface BasicModalProps {
+  showBasicModal: boolean;
+  setShowBasicModal: (value: SetStateAction<boolean>) => void;
+}
 
-function BasicModal({ children }: PropsWithChildren<BasicModalProps>) {
-  const [showBasicModal, setShowBasicModal] =
-    useRecoilState(showBasicModalState);
+function BasicModal({
+  showBasicModal,
+  setShowBasicModal,
+  children,
+}: PropsWithChildren<BasicModalProps>) {
   const closeModal: MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.currentTarget !== e.target) return;
     setShowBasicModal(false);

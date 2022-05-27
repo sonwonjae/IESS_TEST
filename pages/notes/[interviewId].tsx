@@ -2,33 +2,27 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { useSetRecoilState } from 'recoil';
-import { showBasicModalState } from '@store/modal';
-
 import Layout from '@layout';
-import { BasicModal } from '@layout/Modal';
 
-import { QuestionForm } from '@components/Form';
-import { useState } from 'react';
+import { QuestionGroupCard } from '@components/Card';
+
 import { useInterview } from '@api/queries/interview';
 import { useQuestions } from '@api/queries/questions';
 
 const Note: NextPage = () => {
   const router = useRouter();
-  const setShowBasicModal = useSetRecoilState(showBasicModalState);
-  const [initQuestionFormData, setInitQuestionFormData] = useState<
-    Question | undefined
-  >();
   const { data: interview, isLoading, isError } = useInterview();
-  const { data: questions } = useQuestions({
+  const { data } = useQuestions({
     enabled: !!router.query.interviewId && !!interview,
   });
+
+  if (!data) {
+    return <></>;
+  }
+
+  const { questions } = data;
+
   console.log({ questions });
-
-  const openModal = () => {
-    setShowBasicModal(true);
-  };
-
   return (
     <>
       <Head>
@@ -36,11 +30,18 @@ const Note: NextPage = () => {
       </Head>
       <Layout>
         <h2>INTERVIEW NOTE</h2>
-        <button onClick={openModal}>질문 추가하기</button>
+        <div>
+          {questions?.map((questionGroup) => {
+            const [groupName] = questionGroup;
+            return (
+              <QuestionGroupCard
+                key={groupName}
+                questionGroup={questionGroup}
+              />
+            );
+          })}
+        </div>
       </Layout>
-      <BasicModal>
-        <QuestionForm initFormData={initQuestionFormData} />
-      </BasicModal>
     </>
   );
 };
