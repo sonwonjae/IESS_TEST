@@ -1,5 +1,5 @@
 interface Question {
-  question: string;
+  title: string;
   answer: string;
   hints: string[];
   isPublic: boolean;
@@ -7,8 +7,7 @@ interface Question {
   group: string;
   searchKeyword?: string[];
   likedUsers?: string[];
+  interviewId?: string;
 }
 
-type Questions = {
-  [questionId: string]: Question;
-};
+type Questions = Question[];
