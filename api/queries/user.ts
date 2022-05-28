@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import {
   MutationFunction,
   useMutation,
@@ -21,13 +22,25 @@ const provider = new GoogleAuthProvider();
 
 // 로그인 정보 확인
 const confirmLogin = async () => {
-  try {
-    const User = await getRedirectResult(auth);
-    return !!User;
-  } catch (error) {}
+  const User = await getRedirectResult(auth);
+
+  if (!!User) {
+    // 배포 시 보안 작업
+    document.cookie = `uid=${User.user.uid}; max-age=${7 * 24 * 60 * 60}`;
+  }
+  return User;
 };
 export const useConfirmLogin = () => {
-  return useQuery('confirmLogin', confirmLogin);
+  const router = useRouter();
+  return useQuery('confirmLogin', confirmLogin, {
+    onSuccess: (User) => {
+      console.log({ User });
+      if (!!User) {
+        console.log({ isUser: !!User });
+        router.push('/');
+      }
+    },
+  });
 };
 
 // 로그인

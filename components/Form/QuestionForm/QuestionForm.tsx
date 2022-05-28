@@ -1,51 +1,95 @@
 import Head from 'next/head';
 
-import { FormEventHandler, PropsWithChildren, useState } from 'react';
+import {
+  FormEventHandler,
+  PropsWithChildren,
+  SetStateAction,
+  useState,
+} from 'react';
 
 import { useCreateQuestion } from '@api/queries/question';
-
-import { useSetRecoilState } from 'recoil';
-import { showBasicModalState } from '@store/modal';
 
 import * as FormStyled from '../Form.style';
 
 import { TextInput, ToggleInput, HintInput } from '@components/Form/FormItem';
 
 import { makeSearchKeyword } from '@utils/question';
+import { useRouter } from 'next/router';
+import { useQueryClient } from 'react-query';
 
 interface QuestionFormProps {
+  reqQuestionFormData: ResQuestions | undefined;
   initFormData?: Question;
+  initGroup?: string;
+  setShowBasicModal: (value: SetStateAction<boolean>) => void;
 }
 
 function QuestionForm({
+  reqQuestionFormData,
   initFormData: init = {
-    question: '',
+    title: '',
     answer: '',
     hints: [],
     isPublic: true,
     withInterview: false,
     group: '',
   },
+  initGroup = 'none',
+  setShowBasicModal,
 }: PropsWithChildren<QuestionFormProps>) {
+  const router = useRouter();
   // 데이터 관련 상태
-  const [question, setQuestion] = useState(init.question);
+  const [title, setTitle] = useState(init.title);
   const [answer, setAnswer] = useState(init.answer);
   const [hint, setHint] = useState('');
   const [hints, setHints] = useState(init.hints);
   const [changedHints, setChangedHints] = useState(true);
   const [isPublic, setIsPublic] = useState(init.isPublic);
   const [withInterview, setWithInterview] = useState(init.withInterview);
-  const [group, setGroup] = useState(init.group);
-  const setShowBasicModal = useSetRecoilState(showBasicModalState);
+  const [group, setGroup] = useState(initGroup);
 
   // 유효성 관련 상태
   const isValid =
-    question &&
-    (init.question !== question || init.answer !== answer || changedHints);
+    title && (init.title !== title || init.answer !== answer || changedHints);
+  const queryClient = useQueryClient();
 
   const createQuestionMutate = useCreateQuestion({
     onSuccess: (res) => {
-      console.log({ res });
+      const queryKey = ['questions', router.query.interviewId];
+
+      if (!reqQuestionFormData) return;
+      const { questions, groupOrder, orders } = reqQuestionFormData;
+      const newQuestions = questions.map(([groupName, qInNewQuestions]) => {
+        if (groupName === group) {
+          qInNewQuestions.push({
+            title,
+            answer,
+            hints,
+            isPublic,
+            withInterview,
+            group,
+            searchKeyword: makeSearchKeyword(title),
+            likedUsers: [],
+            interviewId: router.query.interviewId as string,
+            questionId: res.data.questionId,
+          });
+        }
+        return [groupName, qInNewQuestions];
+      });
+      const newGroupOrder = new Set(groupOrder);
+      newGroupOrder.add(group);
+
+      if (orders[group]) {
+        orders[group].push(res.data.questionId);
+      } else {
+        orders[group] = [res.data.questionId];
+      }
+
+      queryClient.setQueryData(queryKey, {
+        questions: newQuestions,
+        groupOrder: [...newGroupOrder],
+        orders,
+      });
     },
   });
 
@@ -62,15 +106,21 @@ function QuestionForm({
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
+    if (!reqQuestionFormData) return;
     createQuestionMutate.mutate({
-      question,
-      answer,
-      hints,
-      isPublic,
-      withInterview,
-      group: group || 'none',
-      searchKeyword: makeSearchKeyword(question),
-      likedUsers: [],
+      question: {
+        title,
+        answer,
+        hints,
+        isPublic,
+        withInterview,
+        group: group,
+        searchKeyword: makeSearchKeyword(title),
+        likedUsers: [],
+        interviewId: router.query.interviewId as string,
+      },
+      groupOrder: reqQuestionFormData.groupOrder,
+      orders: reqQuestionFormData.orders,
     });
     setShowBasicModal(false);
   };
@@ -85,9 +135,9 @@ function QuestionForm({
       </Head>
       <FormStyled.Form onSubmit={onSubmit}>
         <TextInput
-          id="question"
-          value={question}
-          setValue={setQuestion}
+          id="title"
+          value={title}
+          setValue={setTitle}
           required
           placeholder={'질문을 입력해주세요.'}
         >

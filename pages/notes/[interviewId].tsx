@@ -1,41 +1,65 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-
-import { useSetRecoilState } from 'recoil';
-import { showBasicModalState } from '@store/modal';
 
 import Layout from '@layout';
-import { BasicModal } from '@layout/Modal';
 
-import { QuestionForm } from '@components';
-import { useState } from 'react';
+import { QuestionGroupCard } from '@components/Card';
+
+import { fetchInterview, useInterview } from '@api/queries/interview';
+import { fetchQuestions, useQuestions } from '@api/queries/questions';
+import { dehydrate, QueryClient } from 'react-query';
 
 const Note: NextPage = () => {
-  const router = useRouter();
-  const setShowBasicModal = useSetRecoilState(showBasicModalState);
-  const [initQuestionFormData, setInitQuestionFormData] = useState<
-    Question | undefined
-  >();
+  const { data: interview, isLoading, isError } = useInterview();
+  const { data } = useQuestions();
 
-  const openModal = () => {
-    setShowBasicModal(true);
-  };
+  const questions = data ? data.questions : [];
 
   return (
     <>
       <Head>
-        <title>IESS | {router.query.interviewId}</title>
+        <title>IESS | {interview?.title}</title>
       </Head>
       <Layout>
         <h2>INTERVIEW NOTE</h2>
-        <button onClick={openModal}>질문 추가하기</button>
+        <div>
+          {questions.map((questionGroup) => {
+            const [groupName] = questionGroup;
+            return (
+              <QuestionGroupCard
+                key={groupName}
+                reqQuestionFormData={data}
+                questionGroup={questionGroup}
+              />
+            );
+          })}
+        </div>
       </Layout>
-      <BasicModal>
-        <QuestionForm initFormData={initQuestionFormData} />
-      </BasicModal>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { interviewId } = context.query;
+  const queryClient = new QueryClient();
+  try {
+    await queryClient.prefetchQuery(['interview', interviewId], () =>
+      fetchInterview(interviewId, {
+        headers: { uid: context.req.cookies.uid },
+      })
+    );
+    await queryClient.prefetchQuery(['questions', interviewId], () =>
+      fetchQuestions(interviewId, {
+        headers: { uid: context.req.cookies.uid },
+      })
+    );
+  } catch (error) {}
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+  return { props: {} };
 };
 
 export default Note;
