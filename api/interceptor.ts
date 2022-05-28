@@ -1,8 +1,5 @@
 import { AxiosInstance } from 'axios';
 
-import { auth } from '@firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-
 export function interceptors(requestHTTP: AxiosInstance) {
   requestHTTP.interceptors.request.use(
     async (config) => {
@@ -18,10 +15,6 @@ export function interceptors(requestHTTP: AxiosInstance) {
       return response;
     },
     (error) => {
-      if (error.response.status === 403) {
-        window.location.href = '/login';
-      }
-
       return Promise.reject(error);
     }
   );

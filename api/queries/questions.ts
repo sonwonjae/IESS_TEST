@@ -1,19 +1,23 @@
 import { useRouter } from 'next/router';
 import { useQuery, UseQueryOptions } from 'react-query';
 import { axiosWithUser } from '@api';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // 면접 리스트 GET
-const fetchQuestions = async (interviewId: string | string[] | undefined) => {
+export const fetchQuestions = async (
+  interviewId: string | string[] | undefined,
+  option?: AxiosRequestConfig<any>
+) => {
   const { data } = await axiosWithUser.get<ResQuestions>(
-    `/questions/${interviewId}`
+    `/questions/${interviewId}`,
+    option
   );
   return data;
 };
 export const useQuestions = (
   option?: UseQueryOptions<
     ResQuestions,
-    AxiosError<any>,
+    AxiosError,
     ResQuestions,
     ['questions', string | string[] | undefined]
   >
@@ -25,6 +29,12 @@ export const useQuestions = (
     () => fetchQuestions(router.query.interviewId),
     {
       enabled: !!router.query.interviewId,
+      retry: false,
+      onError: (error) => {
+        if (error?.response?.status === 403) {
+          router.push('/login');
+        }
+      },
       ...option,
     }
   );
