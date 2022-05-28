@@ -25,7 +25,8 @@ const confirmLogin = async () => {
     const User = await getRedirectResult(auth);
 
     if (!!User) {
-      document.cookie = `uid=${User.user.uid}`;
+      // 배포 시 보안 작업
+      document.cookie = `uid=${User.user.uid}; max-age=${7 * 24 * 60 * 60}`;
     }
     return !!User;
   } catch (error) {}
