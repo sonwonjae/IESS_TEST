@@ -10,6 +10,7 @@ import {
 import { useCreateInterview } from '@api/queries/interview';
 
 import * as InterviewFormStyled from './InterviewForm.style';
+import { maxLength } from '@constants/maxSize';
 
 interface InterviewFormProps {}
 
@@ -44,7 +45,12 @@ function InterviewForm({}: PropsWithChildren<InterviewFormProps>) {
         ></meta>
       </Head>
       <InterviewFormStyled.InterviewForm onSubmit={onSubmit}>
-        <input type="text" value={title} onChange={changeInterview} />
+        <input
+          type="text"
+          value={title}
+          onChange={changeInterview}
+          maxLength={maxLength}
+        />
         <InterviewFormStyled.SubmitButton type="submit">
           저장
         </InterviewFormStyled.SubmitButton>

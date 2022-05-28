@@ -1,3 +1,4 @@
+import { maxLength } from '@constants/maxSize';
 import {
   ChangeEventHandler,
   memo,
@@ -41,6 +42,7 @@ function TextInput({
           value={value}
           required={required}
           onChange={changeValue}
+          maxLength={maxLength}
         />
       ) : (
         <textarea
