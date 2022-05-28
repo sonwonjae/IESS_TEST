@@ -17,14 +17,16 @@ export default async function handler(
   const {
     method,
     cookies,
+    headers,
     query: { interviewId },
   } = req;
+  const uid = (cookies.uid || headers.uid) as string;
 
   const questionsCollectionId = 'questions';
   const questionsRef = collection(db, questionsCollectionId);
   const questionsQuery = query(
     questionsRef,
-    where('uid', '==', cookies.uid),
+    where('uid', '==', uid),
     where('interviewId', '==', interviewId)
   );
   const questionsOrderCollectionId = 'questions_order';

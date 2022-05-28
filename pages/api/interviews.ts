@@ -7,11 +7,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Interviews>
 ) {
-  const { method, cookies } = req;
+  const { method, cookies, headers } = req;
+  const uid = (cookies.uid || headers.uid) as string;
 
   const collectionId = 'interviews';
   const interviewsRef = collection(db, collectionId);
-  const interviewsQuery = query(interviewsRef, where('uid', '==', cookies.uid));
+  const interviewsQuery = query(interviewsRef, where('uid', '==', uid));
 
   switch (method) {
     case 'GET':
@@ -22,7 +23,6 @@ export default async function handler(
           ...(doc.data() as Interview),
           interviewId: doc.id,
         };
-        console.log({ data });
         resBody.push(data);
       });
       res.status(200).json(resBody);

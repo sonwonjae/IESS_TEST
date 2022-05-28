@@ -15,15 +15,16 @@ export default async function handler(
 ) {
   const {
     method,
-    cookies,
+    cookies,headers,
     query: { interviewId },
   } = req;
+  const uid = (cookies.uid || headers.uid) as string;
 
   const body = req.body as ReqQuestion;
 
   const questionsCollectionId = 'questions';
   const questionsOrderCollectionId = 'questions_order';
-  const newQuestionId = makeId(questionsCollectionId, cookies.uid);
+  const newQuestionId = makeId(questionsCollectionId, uid);
 
   switch (method) {
     case 'POST':
@@ -41,7 +42,7 @@ export default async function handler(
       });
       await setDoc(doc(db, questionsCollectionId, newQuestionId), {
         ...body.question,
-        uid: cookies.uid,
+        uid,
         interviewId: interviewId,
       });
       res

@@ -9,11 +9,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Interviews>
 ) {
-  const { method, body, cookies } = req;
+  const { method, body, headers,cookies } = req;
+  const uid = (cookies.uid || headers.uid) as string;
 
   const questionsOrderCollectionId = 'questions_order';
   const collectionId = 'interviews';
-  const newInterviewId = makeId(collectionId, cookies.uid);
+  const newInterviewId = makeId(collectionId, uid);
 
   switch (method) {
     case 'POST':
@@ -25,7 +26,7 @@ export default async function handler(
       });
       await setDoc(doc(db, collectionId, newInterviewId), {
         ...body,
-        uid: cookies.uid,
+        uid,
       });
       res.status(200);
       break;

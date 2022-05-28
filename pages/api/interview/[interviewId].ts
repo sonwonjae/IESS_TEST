@@ -9,8 +9,11 @@ export default async function handler(
 ) {
   const {
     method,
+    headers,
+    cookies,
     query: { interviewId },
   } = req;
+  const uid = (cookies.uid || headers.uid) as string;
 
   const collectionId = 'interviews';
   const interviewRef = doc(db, collectionId, interviewId as string);

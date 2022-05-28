@@ -1,12 +1,13 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 
 import Layout from '@layout';
 
 import { QuestionGroupCard } from '@components/Card';
 
-import { useInterview } from '@api/queries/interview';
-import { useQuestions } from '@api/queries/questions';
+import { fetchInterview, useInterview } from '@api/queries/interview';
+import { fetchQuestions, useQuestions } from '@api/queries/questions';
+import { dehydrate, QueryClient } from 'react-query';
 
 const Note: NextPage = () => {
   const { data: interview, isLoading, isError } = useInterview();
@@ -36,6 +37,29 @@ const Note: NextPage = () => {
       </Layout>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { interviewId } = context.query;
+  const queryClient = new QueryClient();
+  try {
+    await queryClient.prefetchQuery(['interview', interviewId], () =>
+      fetchInterview(interviewId, {
+        headers: { uid: context.req.cookies.uid },
+      })
+    );
+    await queryClient.prefetchQuery(['questions', interviewId], () =>
+      fetchQuestions(interviewId, {
+        headers: { uid: context.req.cookies.uid },
+      })
+    );
+  } catch (error) {}
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+  return { props: {} };
 };
 
 export default Note;
