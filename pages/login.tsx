@@ -11,17 +11,13 @@ const Home: NextPage = () => {
       router.push('/');
     },
   });
-  const { data: successLogin, isLoading } = useConfirmLogin();
+  const { isLoading } = useConfirmLogin();
   const handleLogin = () => {
     loginMutate.mutate();
   };
   const handleLogout = () => {
     logoutMutate.mutate();
   };
-
-  if (successLogin) {
-    router.push('/');
-  }
 
   if (isLoading) {
     return <h1>로그인 정보 확인중...</h1>;
